@@ -1,5 +1,7 @@
 package Dp;
 
+import java.util.Arrays;
+
 public class Knapsack01 {
 
     /*
@@ -14,24 +16,30 @@ public class Knapsack01 {
      * 3. Build the DP solution.
      */
 
-    public static int knapsack(int index,int[] weights, int[] values, int W) {
+    public static int knapsack(int index,int[] weights, int[] values, int W,int[][] dp) {
 
         // Your solution here
         if(index==values.length) return 0;
-        int skip=knapsack(index+1,weights,values,W);
-        if(weights[index]>W) return skip;
-        int take=values[index]+knapsack(index+1,weights,values,W-weights[index]);
-        return Math.max(skip,take);
+        if(dp[index][W]!=-1) return dp[index][W];
+        int skip=knapsack(index+1,weights,values,W,dp);
+        if(weights[index]>W) return dp[index][W]=skip;
+        int take=values[index]+knapsack(index+1,weights,values,W-weights[index],dp);
+        return dp[index][W]=Math.max(skip,take);
     }
 
     public static void main(String[] args) {
 
         int[] weights = {1, 3, 4, 5};
-        int[] values = {17, 4, 5, 7};
+        int[] values = {17, 4, 15, 7};
         int W = 8;
+        int n=values.length;
+        //n->0-n-1 and w-> W--0
+        int [][]dp=new int[n][W+1];
+        for(int i=0;i<n;i++){
+            Arrays.fill(dp[i],-1);
+        }
+        System.out.println(knapsack(0,weights, values, W,dp));
 
-        System.out.println(knapsack(0,weights, values, W));
-
-        // Expected: 9
+        // Expected: 36
     }
 }
